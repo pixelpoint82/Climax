@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Climax to Earn</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Marked for Markdown parsing if needed, though we use JSON mostly -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         /* Custom Styles & Animations */
@@ -13,10 +12,10 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a1a1a;
+            background-color: #0f0f15;
             color: white;
-            overflow: hidden; /* Prevent scrolling during frantic tapping */
-            touch-action: manipulation; /* Improve touch response */
+            overflow: hidden;
+            touch-action: manipulation;
         }
 
         .game-title {
@@ -74,14 +73,14 @@
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
 
-        /* Pulse for ready state */
-        .pulse-slow {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        /* Silhouette Breathing Animation */
+        .breathe {
+            animation: breathe 4s ease-in-out infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .7; }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.02); opacity: 0.4; }
         }
 
         /* Toggle Switch */
@@ -94,7 +93,42 @@
         }
     </style>
 </head>
-<body class="h-screen w-full flex flex-col items-center justify-between bg-gradient-to-b from-gray-900 to-gray-800 relative">
+<body class="h-screen w-full flex flex-col items-center justify-between relative">
+
+    <!-- Background Gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-gray-900 to-black z-0 pointer-events-none"></div>
+
+    <!-- Silhouette Background -->
+    <div class="absolute inset-0 flex items-end justify-center z-0 pointer-events-none overflow-hidden">
+        <svg viewBox="0 0 500 800" class="h-[90%] w-auto opacity-30 breathe drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" preserveAspectRatio="xMidYMax">
+            <defs>
+                <linearGradient id="silhouette-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#be185d;stop-opacity:1" /> <!-- Pink-700 -->
+                    <stop offset="100%" style="stop-color:#7e22ce;stop-opacity:1" /> <!-- Purple-700 -->
+                </linearGradient>
+            </defs>
+            <!-- Artistic Abstract Silhouette Path -->
+            <path d="
+                M250,100 
+                C230,100 215,115 215,140 
+                C215,160 225,170 230,180 
+                C200,190 180,210 180,250 
+                C180,280 190,300 200,320 
+                C190,350 170,380 170,420 
+                C170,480 210,500 210,500 
+                C180,550 160,650 160,800 
+                L340,800 
+                C340,650 320,550 290,500 
+                C290,500 330,480 330,420 
+                C330,380 310,350 300,320 
+                C310,300 320,280 320,250 
+                C320,210 300,190 270,180 
+                C275,170 285,160 285,140 
+                C285,115 270,100 250,100 
+                Z" 
+                fill="url(#silhouette-gradient)" />
+        </svg>
+    </div>
 
     <!-- Canvas for Confetti -->
     <canvas id="confetti" class="absolute top-0 left-0 w-full h-full pointer-events-none z-50"></canvas>
@@ -103,8 +137,8 @@
     <div class="w-full max-w-md px-6 pt-4 flex flex-col items-center z-10">
         <div class="w-full flex justify-end mb-2">
             <!-- AI Hype Toggle -->
-            <div class="flex items-center space-x-2 bg-gray-800/80 p-2 rounded-full border border-gray-700 backdrop-blur-sm">
-                <span class="text-xs font-bold text-yellow-400 pl-2">✨ DAD's Hype</span>
+            <div class="flex items-center space-x-2 bg-black/60 p-2 rounded-full border border-purple-500/30 backdrop-blur-sm">
+                <span class="text-xs font-bold text-yellow-400 pl-2">✨ AI Hype</span>
                 <label for="ai-toggle" class="flex items-center cursor-pointer relative">
                     <input type="checkbox" id="ai-toggle" class="sr-only" onchange="toggleAI(this)">
                     <div class="w-10 h-6 bg-gray-600 rounded-full border border-gray-500 toggle-label transition-colors"></div>
@@ -113,11 +147,11 @@
             </div>
         </div>
 
-        <h1 class="game-title text-4xl text-yellow-400 mb-2">CLIMAX TO EARN</h1>
-        <h3>Dad"s will make you feel it!</h3>
-        <div class="bg-gray-800/80 backdrop-blur border border-gray-700 rounded-2xl px-6 py-2 shadow-lg flex flex-col items-center min-w-[150px]">
+        <h1 class="game-title text-4xl text-yellow-400 mb-2 drop-shadow-md">CLIMAX TO EARN</h1>
+         <h3>Dad's Will make you feel it DEEP!</h3>
+        <div class="bg-black/60 backdrop-blur border border-purple-500/30 rounded-2xl px-6 py-2 shadow-lg flex flex-col items-center min-w-[150px]">
             <span class="text-xs text-gray-400 uppercase tracking-wider">Current Score</span>
-            <span id="score-display" class="text-3xl font-bold font-mono">0</span>
+            <span id="score-display" class="text-3xl font-bold font-mono text-white">0</span>
         </div>
     </div>
 
@@ -131,25 +165,25 @@
 
             <!-- The Finger Button -->
             <button id="tap-button" class="tap-btn text-[8rem] leading-none filter drop-shadow-2xl relative z-20 group">
-                <span class="group-hover:brightness-110 transition-all">☝️</span>
+                <span class="group-hover:brightness-110 transition-all filter drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">☝️</span>
             </button>
         </div>
 
-        <div id="status-message" class="h-6 mt-4 flex items-center justify-center">
-            <p class="text-gray-500 text-sm animate-pulse" id="instruction-text">Tap the finger!</p>
+        <div id="status-message" class="h-6 mt-4 flex items-center justify-center bg-black/40 rounded-full px-4 backdrop-blur-sm">
+            <p class="text-gray-300 text-sm animate-pulse font-bold" id="instruction-text">Tap the finger!</p>
             <p class="text-yellow-400 text-xs hidden" id="loading-text">✨ Generating Hype...</p>
         </div>
     </div>
 
     <!-- Banana Progress Section -->
     <div class="w-full max-w-md px-6 pb-12 z-10 flex flex-col items-center">
-        <div class="flex justify-between w-full mb-2 text-sm font-bold text-gray-400">
-            <span>Arousal Level</span>
-            <span id="percent-display">0%</span>
+        <div class="flex justify-between w-full mb-2 text-sm font-bold text-gray-300">
+            <span class="bg-black/40 px-2 rounded">Arousal Level</span>
+            <span id="percent-display" class="bg-black/40 px-2 rounded text-yellow-400">0%</span>
         </div>
 
         <!-- Banana Shaped Progress Bar using SVG Masking -->
-        <div class="relative w-full h-16 drop-shadow-lg">
+        <div class="relative w-full h-16 drop-shadow-lg transform hover:scale-105 transition-transform duration-300">
             <svg viewBox="0 0 400 60" class="w-full h-full overflow-visible">
                 <defs>
                     <!-- Define the Banana Shape Path -->
@@ -169,7 +203,7 @@
                 </defs>
 
                 <!-- Background Track (Empty Banana) -->
-                <use href="#banana-path" fill="#374151" stroke="#4b5563" stroke-width="2" />
+                <use href="#banana-path" fill="#1f2937" stroke="#4b5563" stroke-width="2" />
 
                 <!-- Foreground Fill (The Actual Progress) -->
                 <g clip-path="url(#banana-clip)">
@@ -178,14 +212,14 @@
                 </g>
                 
                 <!-- Outline on top -->
-                <use href="#banana-path" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" pointer-events="none" />
+                <use href="#banana-path" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2" pointer-events="none" />
             </svg>
         </div>
     </div>
 
     <!-- Climax / Game Over Modal -->
     <div id="modal-overlay" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-gray-800 border-2 border-yellow-400 p-8 rounded-3xl max-w-sm w-full mx-4 text-center transform scale-90 transition-transform duration-300 relative overflow-hidden" id="modal-content">
+        <div class="bg-gray-800 border-2 border-yellow-400 p-8 rounded-3xl max-w-sm w-full mx-4 text-center transform scale-90 transition-transform duration-300 relative overflow-hidden shadow-2xl" id="modal-content">
             
             <!-- AI Sparkles Background -->
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-yellow-500/20 rounded-full blur-3xl pointer-events-none"></div>
@@ -328,8 +362,9 @@
             
             // Randomize styling slightly
             if (aiEnabled) {
-                el.style.color = Math.random() > 0.5 ? '#fbbf24' : '#f472b6'; // Yellow or Pink
+                el.style.color = Math.random() > 0.5 ? '#fbbf24' : '#d946ef'; // Yellow or Fuchsia
                 el.style.fontSize = (1.2 + Math.random() * 0.5) + 'rem';
+                el.style.textShadow = '0 0 10px rgba(255,255,255,0.5)';
             }
 
             el.style.left = (x - 20 + Math.random() * 40) + 'px';
